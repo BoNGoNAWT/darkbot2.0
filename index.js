@@ -1,16 +1,19 @@
 const { Client, Collection } = require("discord.js");
-const { config } = require("dotenv");
-const leveling = require("discord-leveling")
+//const { config } = require("dotenv");
+const leveling = require("discord-leveling");
 
 const prefix = "!";
 
-const client = new Client({
-    disableEveryone: true
-})
+//const client = new Client({
+   // disableEveryone: true
+//})
 
 client.commands = new Collection();
 client.aliases = new Collection();
 
+config({
+    path: __dirname + "/.env"
+});
 
 ["command"].forEach(handler => {
     require(`./handlers/${handler}`)(client);
@@ -19,7 +22,7 @@ client.aliases = new Collection();
 client.on("ready", () => {
     console.log(`Hi, ${client.user.username} is now online!`);
     client.user.setStatus("online");
-    client.user.setActivity("Killed", {type: "STREAMING"});
+    client.user.setActivity("Присматривает за холопами", {type: "STREAMING"});
 });
 
 client.on("message", async message => {
@@ -52,5 +55,7 @@ client.on("message", async message => {
     }
 });
 
-const token = os.environ.get('BOT_TOKEN');
-client.login(token);
+
+
+
+client.login(process.env.TOKEN);

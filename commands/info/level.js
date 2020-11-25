@@ -1,5 +1,4 @@
 const leveling = require("discord-leveling");
-const canvacord = require("canvacord");
 const { Discord, MessageEmbed } = require("discord.js");
 
 module.exports = {
