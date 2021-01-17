@@ -1,11 +1,12 @@
-const { Client, Collection } = require("discord.js");
+const { Client, Collection, MessageEmbed } = require("discord.js");
 const { config } = require("dotenv");
 const leveling = require("discord-leveling");
 
-const prefix = "!";
+const prefix = ".";
 
 const client = new Client({
-    disableEveryone: true
+    disableEveryone: true,
+    partials: ["MESSAGE"]
 })
 
 client.commands = new Collection();
@@ -54,6 +55,24 @@ client.on("message", async message => {
         leveling.SetXp(message.author.id, 0);
     }
 });
+
+client.on('messageDelete', msg =>{
+    if(!msg.partial){
+        const chan = client.channels.cache.get('797445475590078514');
+        if(chan) {
+            const embed = new MessageEmbed()
+            .setColor("#ff9900")
+            .setFooter(msg.guild.name, msg.guild.iconURL())
+            .setTitle('Message Delete')
+            .addField('Автор:', msg.author.tag)
+            .addField('Канал:', msg.channel.name)
+            .addField('Сообщение:', msg.content)
+            .setThumbnail(msg.author.displayAvatarURL())
+            .setTimestamp()
+        chan.send(embed);
+        }
+    }
+})
 
 
 
