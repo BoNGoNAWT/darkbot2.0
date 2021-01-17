@@ -1,12 +1,12 @@
 const { Client, Collection } = require("discord.js");
-//const { config } = require("dotenv");
+const { config } = require("dotenv");
 const leveling = require("discord-leveling");
 
 const prefix = "!";
 
-//const client = new Client({
-   // disableEveryone: true
-//})
+const client = new Client({
+    disableEveryone: true
+})
 
 client.commands = new Collection();
 client.aliases = new Collection();
