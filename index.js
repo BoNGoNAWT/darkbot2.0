@@ -1,7 +1,7 @@
 const { Client, Collection, MessageEmbed } = require("discord.js");
 const { config } = require("dotenv");
 
-const prefix = "=";
+const prefix = ".";
 
 const client = new Client({
     disableEveryone: true,
