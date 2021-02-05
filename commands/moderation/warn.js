@@ -8,7 +8,7 @@ module.exports = {
         msg.delete();
         if (!msg.member.hasPermission('MANAGE_MESSAGES')) return msg.reply('вы не можете использовать данную команду!');
 
-        var user = msg.mentions.users.first();
+        let user = msg.mentions.users.first();
         if (!user) return msg.reply('Укажите тег');
 
         var member;
@@ -29,8 +29,8 @@ module.exports = {
         var log = new MessageEmbed()
         .setColor("#ff0000")
         .setTimestamp()
-        .setFooter(msg.author, msg.author.displayAvatarURL())
-        .setThumbnail(user.displayAvatarURL())
+        .setFooter(msg.author.tag, msg.author.displayAvatarURL({dynamic: true}))
+        .setThumbnail(user.displayAvatarURL({dynamic: true}))
         .setTitle('User Warned')
         .addField('Предупрежден:', user, true)
         .addField('Причина:', reason)
@@ -38,20 +38,19 @@ module.exports = {
 
         var emb = new MessageEmbed()
         .setColor("#ff0000")
-        .setFooter(msg.guild.name, msg.guild.iconURL())
+        .setFooter(msg.guild.tag, msg.guild.iconURL({dynamic: true}))
         .setDescription("Предупреждение")
         .addField("Нарушитель:", user, true)
-        .setThumbnail(user.displayAvatarURL())
+        .setThumbnail(user.displayAvatarURL({dynamic: true}))
         .setTimestamp()
         msg.channel.send(emb);
 
         var embed = new MessageEmbed()
         .setColor("#ff0000")
-        .setFooter(msg.guild.name, msg.guild.iconURL())
+        .setFooter(msg.guild.tag, msg.guild.iconURL({dynamic: true}))
         .setDescription("Предупреждение")
         .addField("Причина:", reason, true)
-        .setThumbnail(user.displayAvatarURL({dynamic: true}))
         .setTimestamp()
-        user.msg.send(emded);
+        user.send(embed);
     }
 }

@@ -11,7 +11,7 @@ module.exports = {
         msg.delete();
         if (!msg.member.hasPermission('MANAGE_MESSAGES')) return msg.reply('вы не можете использовать данную команду!');
 
-        var user = msg.mentions.users.first();
+        let user = msg.mentions.users.first();
         if (!user) return msg.reply('Укажите тег');
 
         var member;
@@ -38,10 +38,10 @@ module.exports = {
         var log = new MessageEmbed()
         .setColor("#ff0000")
         .setTimestamp()
-        .setFooter(msg.author, msg.author.displayAvatarURL())
-        .setThumbnail(user.displayAvatarURL())
+        .setFooter(msg.author.tag, msg.author.displayAvatarURL({dynamic: true}))
+        .setThumbnail(user.displayAvatarURL({dynamic: true}))
         .setTitle('User Muted')
-        .addField('Нарушитель:', user, true)
+        .addField('Нарушитель:', user.tag, true)
         .addField('Причина:', reason)
         .addField("Время:", ms(time), true)
         channel.send(log);
@@ -57,12 +57,20 @@ module.exports = {
 
         var emb = new MessageEmbed()
         .setColor("#ff0000")
-        .setFooter(msg.guild.name, msg.guild.iconURL())
+        .setFooter(msg.guild.name, msg.guild.iconURL({dynamic: true}))
         .setDescription("Блокировка сообщений")
-        .addField("Нарушитель:", user, true)
+        .addField("Нарушитель:", user.tag, true)
         .addField("Время:", ms(time), true)
-        .setThumbnail(user.displayAvatarURL())
+        .setThumbnail(user.displayAvatarURL({dynamic: true}))
         .setTimestamp()
         msg.channel.send(emb);
+
+        var embed = new MessageEmbed()
+        .setColor("#ff0000")
+        .setFooter(msg.guild.tag, msg.guild.iconURL({dynamic: true}))
+        .setDescription("Предупреждение")
+        .addField("Причина:", reason, true)
+        .setTimestamp()
+        user.send(embed);
     }
 }

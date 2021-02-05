@@ -1,12 +1,11 @@
 const { Client, Collection, MessageEmbed } = require("discord.js");
 const { config } = require("dotenv");
-const leveling = require("discord-leveling");
 
-const prefix = ".";
+const prefix = "=";
 
 const client = new Client({
     disableEveryone: true,
-    partials: ["MESSAGE"]
+    partials: ["MESSAGE", "CHANNEL", "REACTION"]
 })
 
 client.commands = new Collection();
@@ -23,8 +22,33 @@ config({
 client.on("ready", () => {
     console.log(`Hi, ${client.user.username} is now online!`);
     client.user.setStatus("online");
-    client.user.setActivity("Присматривает за холопами", {type: "STREAMING"});
+    client.user.setActivity("Проповедник истинного пламени", {type: "STREAMING"});
 });
+
+client.on("messageReactionAdd", async (reaction, user) => {
+    if(reaction.message.id == '798911162829242399'){
+        const { guild }= reaction.message
+        const role1 = guild.roles.cache.find((role) => role.name === 'light')
+        const role2 = guild.roles.cache.find((role) => role.name === 'dark')
+        const member = guild.members.cache.find((member) => member.id === user.id)
+
+        if(reaction.emoji.name == 'light'){
+            member.roles.remove(role2)
+            member.roles.add(role1)
+
+            console.log('done');
+
+        }
+        if(reaction.emoji.name == 'dark') {
+            member.roles.remove(role1)
+            member.roles.add(role2)
+
+            console.log('done');
+        }
+    }else{
+        return;
+    }
+})
 
 client.on("message", async message => {
 
@@ -45,18 +69,9 @@ client.on("message", async message => {
         command.run(client, message, args);
 });
 
-client.on("message", async message => {
-
-    let user = await leveling.Fetch(message.author.id);
-    leveling.AddXp(message.author.id, 1);
-
-    if(profile.xp + 1 > 500){
-        leveling.AddLevel(message.author.id, 1);
-        leveling.SetXp(message.author.id, 0);
-    }
-});
 
 client.on('messageDelete', msg =>{
+    if (msg.author.bot) return;
     if(!msg.partial){
         const chan = client.channels.cache.get('797445475590078514');
         if(chan) {
@@ -72,7 +87,7 @@ client.on('messageDelete', msg =>{
         chan.send(embed);
         }
     }
-})
+});
 
 
 

@@ -33,6 +33,6 @@ module.exports = {
             **> Канал:** ${message.channel}
             **> Причина:** ${args.slice(1).join(" ")}`);
 
-        return channel.send(embed);
+        message.channel.send(embed);
     }
 }
