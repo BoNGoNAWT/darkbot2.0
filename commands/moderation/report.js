@@ -4,35 +4,38 @@ const { category } = require("../info/info");
 
 module.exports = {
     name: "report",
+    aliaases: ["репорт", "р", "r"],
     category: "moderation",
     description: "Подать жалобу на пользователя",
     usage: "< mention | id>",
-    run: async (client, message, args) => {
-        if (message.daletable) message.delete();
+    run: async (client, msg, args) => {
+        msg.delete();
+        let user = msg.mentions.users.first();
+        if (!user) return msg.reply('Укажите тег');
 
-        let rMember = message.mentions.members.first() || message.guild.members.get(args[0]);
+        var member;
 
-        if (!rMember)
-            return message.reply("Невозможно найти данного пользователя").then(m => m.delete(5000));
+        try {
+            member = await msg.guild.members.fetch(user);
+        }catch(err){
+            member = null;
+        }
 
-        if (rMember.hasPermission("BAN_MEMBER") || rMember.user.bot)
-            return message.reply("Невозможно подать жалобу на данного пользователя").then(m => m.delete(5000));
+        if (!member) return msg.reply('They aren in the server');
 
-        const channel = message.guild.channels.find(channel => channel.name === "logs");
+        var reason = args.splice(1).join(' ');
+        if(!reason) return msg.reply('Укажите причину!');
 
-        if (!channel)
-            return message.channel.send("Не могу найти канал для репортов").then(m => m.delete(5000));
+        var channel = msg.guild.channels.cache.find(c => c.name === "reports");
 
-        const embed = new MessageEmbed()
-            .setColor("#ff0000")
-            .setTimestamp()
-            .setFooter(message.guild.name, message.guild.iconURL)
-            .setAuthor("Подан репорт", rMember.user.displayAwatarURL)
-            .setDescription(stripIndents`**> Нарушитель:** ${rMember} ${rMember.id}
-            **> Подал репорт:** ${message.member} ${message.member.id}
-            **> Канал:** ${message.channel}
-            **> Причина:** ${args.slice(1).join(" ")}`);
-
-        message.channel.send(embed);
+        var log = new MessageEmbed()
+        .setColor("#ff0000")
+        .setTimestamp()
+        .setFooter(msg.author.tag, msg.author.displayAvatarURL({dynamic: true}))
+        .setThumbnail(user.displayAvatarURL({dynamic: true}))
+        .setTitle('report')
+        .addField('Жалоба на:', user.tag, user.id, true)
+        .addField('Причина:', reason)
+        channel.send(log);
     }
 }
